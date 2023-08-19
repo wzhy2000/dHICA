@@ -49,9 +49,6 @@ def main():
   parser.add_option('-x', dest='extend_bp',
       default=0, type='int',
       help='Extend sequences on each side [Default: %default]')
-  parser.add_option('--zzx', dest='zzx',
-      default=False, action='store_true',
-      help='zzx') #没有用上
   parser.add_option('--mouse', dest='mouse',
       default=False, action='store_true',
       help='Is mouse?')
@@ -63,8 +60,8 @@ def main():
     fasta_file = args[0]
     seqs_bed_file = args[1]
     seqs_cov_dir = args[2]
-    proseq_id_file = args[3] # id.txt
-    tfr_file = args[4] #tfr_stem (tfr_dir, fold_set, tfr_i)
+    proseq_id_file = args[3] 
+    tfr_file = args[4]
 
   # exit()
   ################################################################
@@ -150,27 +147,6 @@ def main():
       mseq_end = mseq.end + options.extend_bp
 
       # read FASTA
-      # seq_dna = fasta_open.fetch(mseq.chr, mseq.start, mseq.end)
-      # 想拓展，得在这里入手
-      '''
-      fetch里已经有补N了，这里不用补了
-      '''
-      # if options.zzx:
-      #   # 判断是否越界，越界补N
-      #   mseq_start = mseq_start - 32512
-      #   mseq_end = mseq_end + 32512
-      #   if mseq_start < 0 or mseq_end > chr_length[mseq.chr]:
-      #     fasta_start = max(mseq_start, 0)
-      #     fasta_end = min(chr_length[mseq.chr], mseq_end)
-      #     pad_upstream = 'N' * max(mseq_start, 0)
-      #     pad_downstream = 'N' * max(mseq_end - chr_length[mseq.chr], 0)
-      #     seq_dna = fetch_dna(fasta_open, mseq.chr, fasta_start, fasta_end)
-      #     seq_dna = pad_upstream + seq_dna + pad_downstream
-      #   else:
-      #     seq_dna = fetch_dna(fasta_open, mseq.chr, mseq_start, mseq_end)
-      # else:
-      #   seq_dna = fetch_dna(fasta_open, mseq.chr, mseq_start, mseq_end)
-      # print(mseq_start, mseq_end)
       mseq_start = mseq_start - 32768
       mseq_end = mseq_end + 32768
       seq_dna = fetch_dna(fasta_open, mseq.chr, mseq_start, mseq_end)#处理超出track范围的sequence
@@ -178,30 +154,9 @@ def main():
       # print(seq_dna[:10])
       # one hot code (N's as zero)
       seq_1hot = dna_1hot(seq_dna, n_uniform=False, n_sample=False)
-   
-      # seq_1hot = dna_1hot_index(seq_dna) # more efficient, but fighting inertia
-      # if np.all(seq_1hot==0) or np.all(targets[si,:,:]==0):
-      #   with open(seqs_bed_file[:-3]+'miss.bed', 'a') as w_obj:
-      #     w_obj.write(mseq.chr + '\t' + str(mseq.start) + '\t' +  str(mseq.end) + '\t' + mseq.label + '\t' +  mseq.protype + '\n')
-      #   continue
-
-      # print(type(seq_1hot))
-      # exit()
-      # read pro-seq
-      # proseq_id_file = '/local/hg19_data/proseq_id.txt'
-      # print(mseq_start, mseq_end)
-      #pro_seq_minus, pro_seq_plus, pro_seq_minus_plus = np.asarray(get_pro_seq(proseq_id_file, mseq.chr, mseq_start, mseq_end, mseq.protype))
       atac_seq = np.asarray(get_atac_seq(proseq_id_file, mseq.chr, mseq_start, mseq_end, mseq.protype)) #根据不同的protype读取不同的bw文件
 
-      # print(pro_seq[0].shape)
-      # exit()
-      
-      # print(len(pro_seq))
-      # exit()
-
       # hash to bytes
-      
-
       atac_seq = abs(atac_seq)
 
       targets_n = targets[si,:,:]
@@ -237,16 +192,6 @@ def main():
 
     fasta_open.close()
 
-'''
-  genome_cov_file = '/local/hg19_data/pro-seq/GSM1480325_K562_GROseq_minus.bigWig'
-  genome_cov_open = br.CovFace(genome_cov_file)
-  seq_cov_nt = genome_cov_open.read(mseq.chr, mseq_start, mseq_end)
-  baseline_cov = np.percentile(seq_cov_nt, 100*0.5)
-  baseline_cov = np.nan_to_num(baseline_cov)
-  nan_mask = np.isnan(seq_cov_nt)
-  seq_cov_nt[nan_mask] = baseline_cov
-  pro_seq = seq_cov_nt
-'''
 
 def get_atac_seq(atac_id_file, chr, start, end, protype):
   atac_seq = []
@@ -288,7 +233,6 @@ def get_atac_seq(atac_id_file, chr, start, end, protype):
   seq_cov_nt[nan_mask] = baseline_cov
   #seq_cov_nt_plus[nan_mask_plus] = baseline_cov_plus
 
-  # 拼接越界部分，越界部分赋值为0
   seq_cov_nt = np.hstack((np.zeros(abs(start - p_start)), seq_cov_nt))
   seq_cov_nt = np.hstack((seq_cov_nt, np.zeros(abs(end - p_end)))).astype('float16')
 
@@ -300,68 +244,7 @@ def get_atac_seq(atac_id_file, chr, start, end, protype):
   atac_seq.append(seq_cov_nt)
   #pro_seq_plus.append(seq_cov_nt_plus)
   #pro_seq_minus_plus.append(proseq_minus_plus)
-
-  '''
-  seq_cov_nt = seq_cov_nt_minus + seq_cov_nt_plus
-
-  # 拼接越界部分，越界部分赋值为0
-  seq_cov_nt = np.hstack((np.zeros(abs(start-p_start)), seq_cov_nt))
-  seq_cov_nt = np.hstack((seq_cov_nt, np.zeros(abs(end-p_end))))
-  #
-  # 改东西时需要调整的参数
-  #
-  seq_cov_nt = seq_cov_nt.reshape(1536, 128)
-  seq_cov_nt = seq_cov_nt.sum(axis=1, dtype='float16')
-
-  pro_seq.append(seq_cov_nt)
-  '''
-
   return atac_seq
-
-def get_atac_seq1(atac_id_file, chr, start, end, protype):
-  atac_seq = []
-  with open(atac_id_file, 'r') as r_obj:
-    genome_cov_files = r_obj.readlines()
-  genome_cov_files = [line.strip("\n") for line in genome_cov_files]
-
-  for genome_cov_file in genome_cov_files:
-    genome_cov_file = genome_cov_file[:]
-    try:
-      genome_cov_open = br.CovFace(genome_cov_file)
-    except:
-      print('111', protype)
-      exit()
-
-    p_start = start if start > 0 else 0
-    p_end = end if end < chr_length_human[chr] else chr_length_human[chr]
-
-    try:
-      seq_cov_nt = genome_cov_open.read(chr, p_start, p_end)
-      # seq_cov_nt_plus = genome_cov_open_plus.read(chr, p_start, p_end)
-    except:
-      print(chr, start, end)
-      print(chr, p_start, p_end)
-      exit()
-
-    baseline_cov = np.percentile(seq_cov_nt, 100 * 0.5)
-    # baseline_cov_plus = np.percentile(seq_cov_nt_plus, 100 * 0.5)
-
-    baseline_cov = np.nan_to_num(baseline_cov)
-    # baseline_cov_plus = np.nan_to_num(baseline_cov_plus)
-
-    nan_mask = np.isnan(seq_cov_nt)
-
-    seq_cov_nt[nan_mask] = baseline_cov
-
-    # 拼接越界部分，越界部分赋值为0
-    seq_cov_nt = np.hstack((np.zeros(abs(start - p_start)), seq_cov_nt))
-    seq_cov_nt = np.hstack((seq_cov_nt, np.zeros(abs(end - p_end)))).astype('float16')
-
-    atac_seq.append(seq_cov_nt)
-
-  return atac_seq
-
-
 
 def fetch_dna(fasta_open, chrm, start, end):
   """Fetch DNA when start/end may reach beyond chromosomes."""

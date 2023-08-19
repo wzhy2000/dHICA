@@ -46,7 +46,7 @@ def first_five(path):
     valid_chr22 = []
     test_chr22 = []
     for section in sections:
-        if section[0] == 'chrY':#去掉Y染色体
+        if section[0] == 'chrY':
             continue
         if not (section[0] == 'chr22'):
             if section[-2] == 'train':
@@ -506,54 +506,6 @@ def main():
     add_protype(seqs_bed_file, options.protype, options.chromsome)
 
 
-    #add_protype(seqs_bed_file)
-    '''
-    proseq_path = '/home/dut_ww/enformer/data/k562/all_atac.bed'
-    #应该是把g1，g2···g7的sequence都合并到这一个all_proseq.bed中！！！
-    #将四个atac文件分成atac1...atac4
-    train_seq, valid_seq, test_seq, train_chr22_seq, valid_chr22_seq, test_chr22_seq = first_five(proseq_path)
-    random.shuffle(train_seq)
-    random.shuffle(valid_seq)
-    random.shuffle(test_seq)
-    random.shuffle(train_chr22_seq)
-    random.shuffle(valid_chr22_seq)
-    random.shuffle(test_chr22_seq)
-
-    with open(seqs_bed_file, 'w') as w_obj:
-        for item in train_seq:
-            w_obj.write(item['chr'] + '\t' + item['start'] + '\t' + item['end'] + '\t' + 'train' + '\t' + item['protype'] + '\n')
-        for item in valid_seq:
-            w_obj.write(item['chr'] + '\t' + item['start'] + '\t' + item['end'] + '\t' + 'valid' + '\t' + item['protype'] + '\n')
-        for item in test_seq:
-            w_obj.write(item['chr'] + '\t' + item['start'] + '\t' + item['end'] + '\t' + 'test' + '\t' + item['protype'] + '\n')
-  
-    out_chr22 = '%s/chr22.bed' % options.out_dir
-    with open(out_chr22, 'w') as w_obj:
-        for item in train_chr22_seq:
-            w_obj.write(item['chr'] + '\t' + item['start'] + '\t' + item['end'] + '\t' + 'train' + '\t' + item['protype'] + '\n')
-        for item in valid_chr22_seq:
-            w_obj.write(item['chr'] + '\t' + item['start'] + '\t' + item['end'] + '\t' + 'valid' + '\t' + item['protype'] + '\n')
-        for item in test_chr22_seq:
-            w_obj.write(item['chr'] + '\t' + item['start'] + '\t' + item['end'] + '\t' + 'test' + '\t' + item['protype'] + '\n')
-  
-    mseqs = []
-    fold_mseqs = []
-    for fi in range(num_folds):
-      fold_mseqs.append([])
-    for line in open(seqs_bed_file):
-      a = line.split()
-      msg = ModelSeq(a[0], int(a[1]), int(a[2]), a[3])
-      mseqs.append(msg)
-      if a[3] == 'train':
-        fi = 0
-      elif a[3] == 'valid':
-        fi = 1
-      elif a[3] == 'test':
-        fi = 2
-      else:
-        fi = int(a[3].replace('fold',''))
-      fold_mseqs[fi].append(msg)
-    '''
 # -------------------------------------------------------------------------------------------------
 
     # exit()
@@ -668,11 +620,9 @@ def main():
             cmd += ' %s' % fasta_file
             cmd += ' %s' % seqs_bed_file
             cmd += ' %s' % seqs_cov_dir
-            cmd += ' %s' % proseq_id_file # 其实basenji_data_write.py中没有用到这个txt文件
+            cmd += ' %s' % proseq_id_file 
             cmd += ' %s.tfr' % tfr_stem
 
-            # print(cmd)
-            # print(zzx)
             if options.run_local:
                 # breaks on some OS
                 # cmd += ' &> %s.err' % tfr_stem
@@ -724,7 +674,7 @@ def main():
     stats_dict['%s_seqs' % fold_labels[2]] = len(fold_mseqs[2])
 
     with open('%s/statistics.json' % options.out_dir, 'w') as stats_json_out:
-        json.dump(stats_dict, stats_json_out, indent=4) # indent-间隔符的长度
+        json.dump(stats_dict, stats_json_out, indent=4) 
 
 
 ################################################################################
@@ -1138,7 +1088,6 @@ def limit_contigs(contigs, filter_bed):
 
 ################################################################################
 def rejoin_large_contigs(contigs):
-    # 把连着的那些ctg连接成一个长的ctg
     """ Rejoin large contigs that were broken up before alignment comparison."""
 
     # split list by chromosome

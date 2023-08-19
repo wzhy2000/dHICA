@@ -67,7 +67,6 @@ def split_contigs(chrom_segments, gaps_file):
 
     # consider only if its in our genome
     if chrom in chrom_events:
-      # if语句是后加的
     # if gend < cend:
       chrom_events[chrom].append((gstart, 'gstart'))
       chrom_events[chrom].append((gend, 'Gend'))

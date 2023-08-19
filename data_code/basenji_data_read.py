@@ -95,7 +95,7 @@ def main():
   targets = []
 
   # open genome coverage file
-  genome_cov_open = CovFace(genome_cov_file)# CovFace:依据文件类型来选择不同的方式打开
+  genome_cov_open = CovFace(genome_cov_file)
 
   # for each model sequence
   for si in range(num_seqs):
@@ -110,7 +110,6 @@ def main():
       print('an error')
       exit()
     # interpolate NaN
-    # 处理NaN还没看，后边可以看一下
     if options.interp_nan:
       seq_cov_nt = interp_nan(seq_cov_nt)
 
@@ -122,7 +121,6 @@ def main():
       baseline_cov = 0
 
     # set blacklist to baseline
-    # 黑名单吗，但是程序里是没有算这个的，没有给blacklist这个参数
     if mseq.chr in black_chr_trees:
       for black_interval in black_chr_trees[mseq.chr][mseq.start:mseq.end]:
         # adjust for sequence indexes
@@ -135,20 +133,13 @@ def main():
     # set NaN's to baseline
     if not options.interp_nan:
       nan_mask = np.isnan(seq_cov_nt)
-      # 把空值替换成了中位数
       seq_cov_nt[nan_mask] = baseline_cov
 
     # crop
     if options.crop_bp > 0:
       seq_cov_nt = seq_cov_nt[options.crop_bp:-options.crop_bp]
-    # print(len(seq_cov_nt))
-    # exit()
     # sum pool
-    # 选择合并这128维的方式
-    # print(len(seq_cov_nt))
     seq_cov_nt = seq_cov_nt[8192:-8192]
-    # print(len(seq_cov_nt))
-    # exit()
     seq_cov = seq_cov_nt.reshape(target_length, options.pool_width)
 
     if options.sum_stat == 'sum':
@@ -192,7 +183,6 @@ def main():
   targets = np.clip(targets, -extreme_clip, extreme_clip)
 
   # write all
-  # print(111111)
   # print(targets.shape)
   seqs_cov_open.create_dataset('targets', data=targets, dtype='float16')
 
