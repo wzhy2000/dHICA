@@ -43,7 +43,7 @@ Get the dHICA models
 Pre-trained model that can be used to predict dREG scores across the genome is availiable here.
 If you are failed to download the model files, please contact us.
 
-Usage instructions:
+Usage instruction:
 ===================
 
 ## 1 Predict HMs with Pre-trained Models
