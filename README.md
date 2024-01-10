@@ -54,8 +54,8 @@ First you need to make sure you have download the our Pre-trained Models(aaa).
 
     multi           -- [optional, default=NA] indicating one or several GPUs will be used.
     model_path      -- The path to the pre-trained model(DNase or ATAC).
-    output_path.fa  -- The path to save the output files.
-    ref_genome	    -- Reference genome.(hg19 or mm10)
+    output_path     -- The path to save the output files.
+    ref_genome.fa   -- Reference genome.(hg19 or mm10)
     bw_path         -- Read counts (not normalized) formatted as a bigWig or bw file.
     output_prefix   -- The prefix of the output file.
 
@@ -72,13 +72,13 @@ After the command execution, you will obtain 10 BigWig (bw) files for different 
     target_HM.txt   -- The HMs target file.
 
 
-### 2） Model training
+### 2） Model Training
     python train.py
 
 **Notice:** 
 That command takes more than 8 hours (depends on size of the train datasets) to execute on NVIDA 3060 GPU. Due to very long computational time, we don't suggest to run on CPU nodes.
 
-### 3） Model predict
+### 3） Model Predict
     python predict.py --multi -m model_path  -o output_path 
                         --atac bw_path --op output_prefix --ref ref_genome.fa
 
@@ -89,11 +89,11 @@ That command takes more than 8 hours (depends on size of the train datasets) to 
     bw_path         -- Read counts (not normalized) formatted as a bigWig or bw file.
     output_prefix   -- The prefix of the output file.
 
-### 4） Calculate performance
+### 4） Calculate Performance
     python correlation.py -a dHICA.bw -b ref.bw -p resolution
 
-    dHICA.bw -- dHICA's output.
+    dHICA.bw    -- dHICA's output.
     ref.bw      -- the HMs target.
-    resolution -- a figure(128, 1000 or 10000) or a bed file.
+    resolution  -- a figure(128, 1000 or 10000) or a bed file.
 
 
