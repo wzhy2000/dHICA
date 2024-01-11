@@ -49,7 +49,7 @@ Usage instruction:
 ## 1 Predict HMs with Pre-trained Models
 First you need to make sure you have download the our Pre-trained Models(aaa).
 
-    python predict.py --multi -m model_path  -o output_path 
+    python predict.py -m model_path  -o output_path 
                         --atac bw_path --op output_prefix --ref ref_genome.fa
 
     model_path      -- The path to the pre-trained model(DNase or ATAC).
