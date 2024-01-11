@@ -40,7 +40,7 @@ Required software
 
 Get the dHICA models
 -------------------
-Pre-trained model that can be used to predict dREG scores across the genome is availiable here.
+Pre-trained model that can be used to predict dREG scores across the genome is availiable here( https://dreg.dnasequence.org/themes/dreg/assets/file/dHICA_model.zip ).
 If you are failed to download the model files, please contact us.
 
 Usage instruction:
