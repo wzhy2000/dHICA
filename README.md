@@ -47,7 +47,7 @@ Usage instruction:
 ===================
 
 ## 1 Predict HMs with Pre-trained Models
-First you need to make sure you have download the our Pre-trained Models(aaa).
+First you need to make sure you have download the our Pre-trained Models. The type of ATAC-seq should be fold over change, and that of DNase-seq should be read-depth normalized signal.
 
     python predict.py -m model_path  -o output_path 
                         --atac bw_path --op output_prefix --ref ref_genome.fa
