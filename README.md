@@ -52,7 +52,6 @@ First you need to make sure you have download the our Pre-trained Models(aaa).
     python predict.py --multi -m model_path  -o output_path 
                         --atac bw_path --op output_prefix --ref ref_genome.fa
 
-    multi           -- [optional, default=NA] indicating one or several GPUs will be used.
     model_path      -- The path to the pre-trained model(DNase or ATAC).
     output_path     -- The path to save the output files.
     ref_genome.fa   -- Reference genome.(hg19 or mm10)
@@ -62,8 +61,8 @@ First you need to make sure you have download the our Pre-trained Models(aaa).
 After the command execution, you will obtain 10 BigWig (bw) files for different histone modifications. You can visualize and inspect these files using tools such as IGV (Integrative Genomics Viewer) or Genome Browser. Alternatively, you can utilize the Python package pyBigWig to read the signal data.
 
 ## 2 Training Your Own Model
-### 1） Data processing
-    python basenji_data.py -l seq_length --local -o ouput_path --seq seq_type ref_genome.fa target_HM.txt
+### 1） Generate Dataset
+    python dHICA_data.py -l seq_length --local -o ouput_path --seq seq_type ref_genome.fa target_HM.txt
     
     seq_length      -- [default=131072] Sequence length.
     ouput_path      -- The path to save the output files.
@@ -72,24 +71,13 @@ After the command execution, you will obtain 10 BigWig (bw) files for different 
     target_HM.txt   -- The HMs target file.
 
 
-### 2） Model Training
+### 2） Train Model 
     python train.py
 
 **Notice:** 
-That command takes more than 8 hours (depends on size of the train datasets) to execute on NVIDA 3060 GPU. Due to very long computational time, we don't suggest to run on CPU nodes.
+That command takes more than 8 hours (depends on size of the train datasets) to execute on NVIDA 3090 GPU. Due to very long computational time, we don't suggest to run on CPU nodes.
 
-### 3） Model Predict
-    python predict.py --multi -m model_path  -o output_path 
-                        --atac bw_path --op output_prefix --ref ref_genome.fa
-
-    multi           -- [optional, default=NA] indicating one or several GPUs will be used.
-    model_path      -- The path to the pre-trained model(DNase or ATAC).
-    output_path.fa  -- The path to save the output files.
-    ref_genome	    -- Reference genome.(hg19 or mm10)
-    bw_path         -- Read counts (not normalized) formatted as a bigWig or bw file.
-    output_prefix   -- The prefix of the output file.
-
-### 4） Calculate Performance
+### 3） Calculate Performance
     python correlation.py -a dHICA.bw -b ref.bw -p resolution
 
     dHICA.bw    -- dHICA's output.
