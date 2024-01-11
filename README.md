@@ -63,6 +63,7 @@ After the command execution, you will obtain 10 BigWig (bw) files for different 
 ## 2 Training Your Own Model
 ### 1） Generate Dataset
 The type of ATAC-seq should be fold over change, and that of DNase-seq should be read-depth normalized signal.
+
     python dHICA_data.py -l seq_length --local -o ouput_path --seq seq_type ref_genome.fa target_HM.txt
     
     seq_length      -- [default=131072] Sequence length.
