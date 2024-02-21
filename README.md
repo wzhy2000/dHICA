@@ -86,4 +86,7 @@ That command takes more than 8 hours (depends on size of the train datasets) to 
     ref.bw      -- the HMs target.
     resolution  -- a figure(128, 1000 or 10000) or a bed file.
 
-
+How to cite
+===================
+Wen Wen, Jiaxin Zhong, Zhaoxi Zhang, Tinyi Chu, Nating Wang, Charles G. Danko, Zhong Wang. (2024). Discriminative histone imputation using chromatin accessibility. bioRxiv 2024.01.11.575175; 
+doi: https://doi.org/10.1101/2024.01.11.575175.
